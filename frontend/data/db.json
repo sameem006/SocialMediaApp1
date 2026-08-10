@@ -1,0 +1,47 @@
+{
+  "posts": [
+    {
+      "id": "11",
+      "title": "codiing 💻",
+      "datetime": "February 01, 2026 2:04:53 PM",
+      "body": "eat-sleep-code-repeat 🔁"
+    },
+    {
+      "id": "111",
+      "title": "vacation🎉",
+      "datetime": "February 01, 2026 2:09:15 PM",
+      "body": "went on a vacation to hawaii"
+    },
+    {
+      "id": "1111",
+      "title": "today's click 📷",
+      "datetime": "February 01, 2026 2:07:49 PM",
+      "body": "nice car🚗 ferrrai"
+    },
+    {
+      "id": "11111",
+      "title": "Important news🚨",
+      "datetime": "February 02, 2026 9:01:57 PM",
+      "body": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Doloremque totam cum reiciendis sit harum laudantium, delectus dolore porro molestias inventore molestiae minus asperiores necessitatibus so"
+    },
+    {
+      "id": "111111",
+      "title": "completed react course⚛️",
+      "datetime": "February 03, 2026 12:27:20 AM",
+      "body": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Unde dignissimos beatae doloribus voluptatum magni dolorem sequi nobis et, similique cum "
+    },
+    {
+      "id": "ZUfeYzXaqhE",
+      "title": "Off to ladakh🗻",
+      "datetime": "March 23, 2026 11:56:27 PM",
+      "body": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Incidunt nobis, aspernatur omnis necessitatibus ullam quia iusto, totam perferendis dolorem vel obcaecati fuga ea laborum ut, consequatur cum eum eaque. Aliquid?"
+    },
+    {
+      "id": "uZHXxU6MYj4",
+      "title": "today's click 📷",
+      "datetime": "August 10, 2026 6:30:30 PM",
+      "body": "nice car🚗 ferrrai"
+    }
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
+}
