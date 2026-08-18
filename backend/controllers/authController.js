@@ -51,12 +51,12 @@ export const signUp = async (req, res) => {
 
 export const login = async (req, res) => {
       try {
-            const { username, password } = req.body;
-            const user = await User.findOne({ username });
+            const { email, password } = req.body;
+            const user = await User.findOne({ email });
             const isPasswordCorrect = await bcrypt.compare(password, user?.password || "");
 
             if (!user || !isPasswordCorrect) {
-                  return res.status(400).json({ error: "username or password invalid" });
+                  return res.status(400).json({ error: "email or password invalid" });
             }
 
             generateToken(user._id, res);
