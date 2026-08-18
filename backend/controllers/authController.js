@@ -81,3 +81,16 @@ export const logout = async (req, res) => {
             res.status(400).json({ err: "internal server error" });
       }
 };
+
+export const getMe = async (req, res) => {
+      try {
+            const user = await User.findOne({ _id: req.user._id }).select("-password");
+            if (!user) {
+                  return res.status(404).json({ message: "user not found" });
+            }
+            res.status(200).json(user);
+      } catch (err) {
+            console.log(`Erron in getMe controller : ${err}`);
+            res.status(400).json({ err: "internal server error" });
+      }
+};
