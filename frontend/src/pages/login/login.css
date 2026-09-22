@@ -1,0 +1,90 @@
+.Login {
+      width: 100%;
+      flex-grow: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 1rem;
+      background-color: #efefef;
+}
+
+.loginContainer {
+      width: 100%;
+      max-width: 450px;
+      padding: 2rem;
+      background-color: #fff;
+      border: 1px solid #333;
+      box-shadow: 0px 0px 15px gray;
+}
+
+.loginHeader {
+      text-align: center;
+      margin-bottom: 1.5rem;
+}
+
+.loginHeader h1 {
+      font-size: 1.8rem;
+      margin-bottom: 0.5rem;
+}
+
+.loginHeader p {
+      color: #555;
+}
+
+.loginForm {
+      display: flex;
+      flex-direction: column;
+}
+
+.loginForm label {
+      margin-top: 1rem;
+      margin-bottom: 0.35rem;
+}
+
+.loginForm input {
+      font-family: "Open Sans", sans-serif;
+      width: 100%;
+      min-height: 48px;
+      font-size: 1rem;
+      padding: 0.5rem;
+      border: 1px solid #777;
+      border-radius: 0.25rem;
+      outline: none;
+}
+
+.loginForm input:focus {
+      border: 2px solid #66d8f5;
+}
+
+.loginForm button {
+      margin-top: 1.5rem;
+      height: 48px;
+      border: none;
+      border-radius: 10px;
+      padding: 0.5rem;
+      font-size: 1rem;
+      font-family: "Open Sans", sans-serif;
+      background-color: #66d8f5;
+      color: #000;
+      cursor: pointer;
+}
+
+.loginForm button:hover {
+      background-color: #333;
+      color: #fff;
+}
+
+.signupText {
+      text-align: center;
+      margin-top: 1.5rem;
+      font-size: 0.9rem;
+}
+
+.signupText a {
+      color: #000;
+      font-weight: bold;
+}
+
+.signupText a:hover {
+      color: #66d8f5;
+}
