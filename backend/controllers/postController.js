@@ -70,3 +70,31 @@ export const updatePost = async (req, res) => {
             res.status(500).json({ err: "internal server error" });
       }
 };
+
+export const deletePost = async (req, res) => {
+      try {
+            const post = await Post.findById(req.params.id);
+
+            if (!post) {
+                  return res.status(404).json({
+                        message: "Post not found",
+                  });
+            }
+
+            if (post.userid.toString() !== req.user.id) {
+                  return res.status(403).json({
+                        message: "You can only delete your own post",
+                  });
+            }
+
+            await post.deleteOne();
+
+            res.status(200).json({
+                  message: "Post deleted successfully",
+            });
+      } catch (error) {
+            res.status(500).json({
+                  message: error.message,
+            });
+      }
+};
