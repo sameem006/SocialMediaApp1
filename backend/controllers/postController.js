@@ -42,3 +42,31 @@ export const getPosts = async (req, res) => {
             res.status(500).json({ err: "internal server error" });
       }
 };
+
+export const updatePost = async (req, res) => {
+      try {
+            const post = await Post.findById(req.params.id);
+
+            if (!post) {
+                  return res.status(404).json({
+                        message: "Post not found",
+                  });
+            }
+
+            if (post.userid.toString() !== req.user.id) {
+                  return res.status(403).json({
+                        message: "You can only edit your own post",
+                  });
+            }
+
+            post.title = req.body.title;
+            post.body = req.body.body;
+
+            const upDatedPost = await post.save();
+
+            res.status(200).json(upDatedPost);
+      } catch (error) {
+            console.log(`Error in updatePostcontroller : ${error}`);
+            res.status(500).json({ err: "internal server error" });
+      }
+};
