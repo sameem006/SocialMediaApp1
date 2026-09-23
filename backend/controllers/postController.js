@@ -93,8 +93,23 @@ export const deletePost = async (req, res) => {
                   message: "Post deleted successfully",
             });
       } catch (error) {
-            res.status(500).json({
-                  message: error.message,
-            });
+            console.log(`Error in deletePost controller : ${error}`);
+            res.status(500).json({ err: "internal server error" });
+      }
+};
+
+export const getPost = async (req, res) => {
+      try {
+            const { id } = req.params;
+            const post = await Post.findById(id);
+
+            if (!post) {
+                  return res.status(404).json({ error: "Post Not Found" });
+            }
+
+            res.status(200).json({ post });
+      } catch (error) {
+            console.log(`Error in getPost controller : ${error}`);
+            res.status(500).json({ err: "internal server error" });
       }
 };
