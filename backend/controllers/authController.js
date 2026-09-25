@@ -94,3 +94,10 @@ export const getMe = async (req, res) => {
             res.status(400).json({ err: "internal server error" });
       }
 };
+
+export const checkAuth = (req, res) => {
+      res.status(200).json({
+            success: true,
+            user: req.user,
+      });
+};
