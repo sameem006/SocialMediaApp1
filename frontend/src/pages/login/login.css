@@ -1,13 +1,14 @@
 .Login {
       width: 100%;
+      min-height: 100vh;
       flex-grow: 1;
       display: flex;
       justify-content: center;
       align-items: center;
       padding: 1rem;
       background-color: #efefef;
+      box-sizing: border-box;
 }
-
 .loginContainer {
       width: 100%;
       max-width: 450px;
@@ -15,6 +16,7 @@
       background-color: #fff;
       border: 1px solid #333;
       box-shadow: 0px 0px 15px gray;
+      box-sizing: border-box;
 }
 
 .loginHeader {
@@ -50,6 +52,7 @@
       border: 1px solid #777;
       border-radius: 0.25rem;
       outline: none;
+      box-sizing: border-box;
 }
 
 .loginForm input:focus {
