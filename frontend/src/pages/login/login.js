@@ -1,15 +1,38 @@
 import { useState } from "react";
 import "./login.css";
+import api from "../../api/posts";
+import { useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import { DataContext } from "../../context/DataContext";
 
 const Login = () => {
-      const [username, setUsername] = useState("");
+      const [email, setEmail] = useState("");
       const [password, setPassword] = useState("");
+      const { setIsLoggedIn } = useContext(DataContext);
+      const navigate = useNavigate();
 
-      const handleSubmit = (e) => {
+      const handleSubmit = async (e) => {
             e.preventDefault();
 
-            // Backend connection will be added later
-            console.log("Username:", username);
+            try {
+                  const response = await api.post("/auth/login", {
+                        email,
+                        password,
+                  });
+                  console.log("Login successful:", response.data);
+
+                  setIsLoggedIn(true);
+                  console.log("isLoggedIn set to true");
+
+                  navigate("/");
+                  console.log("Navigated to home");
+            } catch (error) {
+                  console.log("LOGIN ERROR:", error);
+                  console.log("Response:", error.response?.data);
+                  console.log("Message:", error.message);
+            }
+
+            console.log("email:", email);
             console.log("Password:", password);
       };
 
@@ -22,8 +45,8 @@ const Login = () => {
                         </div>
 
                         <form className="loginForm" onSubmit={handleSubmit}>
-                              <label htmlFor="username">Username</label>
-                              <input id="username" type="text" placeholder="Enter your username" value={username} onChange={(e) => setUsername(e.target.value)} required />
+                              <label htmlFor="email">Email</label>
+                              <input id="email" type="text" placeholder="Enter your Email" value={email} onChange={(e) => setEmail(e.target.value)} required />
 
                               <label htmlFor="password">Password</label>
                               <input id="password" type="password" placeholder="Enter your password" value={password} onChange={(e) => setPassword(e.target.value)} required />
