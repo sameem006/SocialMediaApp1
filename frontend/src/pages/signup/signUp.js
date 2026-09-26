@@ -1,14 +1,41 @@
 import { useState } from "react";
 import "./signUp.css";
+import api from "../../api/posts";
+import { useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import { DataContext } from "../../context/DataContext";
 
 const Signup = () => {
       const [username, setUsername] = useState("");
       const [fullName, setFullName] = useState("");
       const [email, setEmail] = useState("");
       const [password, setPassword] = useState("");
+      const { setIsLoggedIn, setCurrentUser } = useContext(DataContext);
+      const [error, setError] = useState("");
+      const navigate = useNavigate();
 
-      const handleSubmit = (e) => {
+      const handleSubmit = async (e) => {
             e.preventDefault();
+
+            try {
+                  const response = await api.post("/auth/signup", {
+                        username,
+                        fullName,
+                        email,
+                        password,
+                  });
+                  setIsLoggedIn(true);
+                  setCurrentUser(response.data.user);
+
+                  navigate("/");
+            } catch (error) {
+                  console.log("FULL ERROR:", error);
+                  console.log("RESPONSE:", error.response);
+                  console.log("DATA:", error.response?.data);
+
+                  console.log(error.response?.data?.message);
+                  setError(error.response?.data?.error || "Invalid email or password");
+            }
 
             console.log({
                   username,
@@ -45,6 +72,7 @@ const Signup = () => {
                         <p className="loginText">
                               Already have an account? <a href="/login">Login</a>
                         </p>
+                        <p style={{ color: "red", marginTop: "10px" }}>{error}</p>
                   </div>
             </main>
       );
