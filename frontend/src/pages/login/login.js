@@ -8,7 +8,8 @@ import { DataContext } from "../../context/DataContext";
 const Login = () => {
       const [email, setEmail] = useState("");
       const [password, setPassword] = useState("");
-      const { setIsLoggedIn } = useContext(DataContext);
+      const { setIsLoggedIn, setCurrentUser } = useContext(DataContext);
+      const [error, setError] = useState("");
       const navigate = useNavigate();
 
       const handleSubmit = async (e) => {
@@ -19,21 +20,16 @@ const Login = () => {
                         email,
                         password,
                   });
-                  console.log("Login successful:", response.data);
 
                   setIsLoggedIn(true);
-                  console.log("isLoggedIn set to true");
-
+                  setCurrentUser(response.data);
                   navigate("/");
-                  console.log("Navigated to home");
             } catch (error) {
-                  console.log("LOGIN ERROR:", error);
+                  //console.log("LOGIN ERROR:", error);
                   console.log("Response:", error.response?.data);
-                  console.log("Message:", error.message);
+                  //console.log("Message:", error.message);
+                  setError(error.response?.data?.message || "Invalid email or password");
             }
-
-            console.log("email:", email);
-            console.log("Password:", password);
       };
 
       return (
@@ -57,6 +53,7 @@ const Login = () => {
                         <p className="signupText">
                               Don't have an account? <a href="/signup">Sign up</a>
                         </p>
+                        <p style={{ color: "red", marginTop: "10px" }}>{error}</p>
                   </div>
             </main>
       );
