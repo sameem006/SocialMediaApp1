@@ -1,136 +1,160 @@
-import { createContext, useState, useEffect, Children } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { format } from 'date-fns';
-import api from '../api/posts';
-import useAxiosFetch from '../hooks/useAxiosFetch';
-import useWindowSize from '../hooks/useWindowSize';
-import Nav from '../Nav';
-import Missing from '../Missing';
-import NewPost from '../NewPost';
-import Header from '../Header';
-import Home from '../Home';
-import PostPage from '../PostPage';
-import About from '../About';
-import { Route, Routes, Link } from 'react-router-dom';
+import { createContext, useState, useEffect, Children } from "react";
+import { useNavigate } from "react-router-dom";
+import { format } from "date-fns";
+import api from "../api/posts";
+import useWindowSize from "../hooks/useWindowSize";
 
-import Post from '../Post';
-import PostLayout from '../PostLayout';
-import Footer from '../Footer';
-import posts from '../api/posts';
-import Edit from '../Edit';
-const DataContext = createContext({});
+export const DataContext = createContext({});
 
 export const DataProvider = ({ children }) => {
-    const [post, setPost] = useState([]);
-    const [value, Setvalue] = useState('');
-    const [searchResults, setSearchResults] = useState([]);
-    const [postTitle, setPostTitle] = useState('');
-    const [postBody, setPostBody] = useState('');
-    const [editTitle, setEditTitle] = useState('');
-    const [editBody, setEditBody] = useState('');
-    const navigate = useNavigate();
-    const { width } = useWindowSize();
-    const { data, fetchError, isLoading } = useAxiosFetch('http://localhost:3500/posts');
+      const [post, setPost] = useState([]);
+      const [value, Setvalue] = useState("");
+      const [searchResults, setSearchResults] = useState([]);
+      const [postTitle, setPostTitle] = useState("");
+      const [postBody, setPostBody] = useState("");
+      const [editTitle, setEditTitle] = useState("");
+      const [editBody, setEditBody] = useState("");
+      const navigate = useNavigate();
+      const { width } = useWindowSize();
+      const [fetchError, setFetchError] = useState("");
+      const [isLoading, setIsLoading] = useState(true);
+      const [checkingAuth, setCheckingAuth] = useState(true);
+      const [isLoggedIn, setIsLoggedIn] = useState(false);
+      const [currentUser, setCurrentUser] = useState(null);
 
-    useEffect(() => {
-        setPost(data);
-    }, [data]);
+      useEffect(() => {
+            const checkLogin = async () => {
+                  try {
+                        const res = await api.get("/auth/check");
 
-    useEffect(() => {
-        const filteredResults = post.filter(
-            (post) =>
-                post.title.toLowerCase().includes(value.toLowerCase()) ||
-                post.body.toLowerCase().includes(value.toLowerCase())
-        );
+                        if (res.status === 200) {
+                              setIsLoggedIn(true);
+                              setCurrentUser(res.data.user);
+                        } else {
+                              setIsLoggedIn(false);
+                              setCurrentUser(null);
+                        }
+                  } catch (err) {
+                        console.log(err);
+                        setIsLoggedIn(false);
+                        setCurrentUser(null);
+                  } finally {
+                        setCheckingAuth(false);
+                  }
+            };
 
-        setSearchResults(filteredResults.reverse());
-    }, [post, value]);
+            checkLogin();
+      }, []);
+      useEffect(() => {
+            if (checkingAuth) return;
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        const id = post.length ? post[post.length - 1].id + 1 : 1;
-        console.log(typeof id);
-        const datetime = format(new Date(), 'MMMM dd, yyyy pp');
-        const newPost = {
-            id,
-            title: postTitle,
-            datetime,
-            body: postBody
-        };
-        try {
-            const response = await api.post('/posts', newPost);
-            const allpost = [...post, response.data];
-            setPost(allpost);
-            setPostTitle('');
-            setPostBody('');
-        } catch (err) {
-            if (err.response) {
-                console.log(err.response.data);
-                console.log(err.response.status);
-                console.log(err.response.headers);
-            } else {
-                console.log(`Error : ${err.message}`);
+            if (!isLoggedIn) {
+                  setPost([]);
+                  setIsLoading(false);
+                  return;
             }
-        }
-    };
+            const getPosts = async () => {
+                  try {
+                        setIsLoading(true);
+                        const res = await api.get("/post/getposts");
+                        setPost(res.data);
+                  } catch (error) {
+                        setFetchError(error.message);
+                  } finally {
+                        setIsLoading(false);
+                  }
+            };
 
-    const handleDelete = async (id) => {
-        try {
-            await api.delete(`/posts/${id}`);
-            const delItems = post.filter((post) => post.id !== id);
+            getPosts();
+      }, [checkingAuth, isLoggedIn]);
 
-            setPost(delItems);
-            navigate('/');
-        } catch (err) {
-            console.log(`Error : ${err.message}`);
-        }
-    };
+      useEffect(() => {
+            const filteredResults = post.filter((post) => post.title.toLowerCase().includes(value.toLowerCase()) || post.body.toLowerCase().includes(value.toLowerCase()));
 
-    const handleEdit = async (id) => {
-        const datetime = format(new Date(), 'MMMM dd, yyyy pp');
-        const updatedPost = {
-            id,
-            title: editTitle,
-            datetime,
-            body: editBody
-        };
+            setSearchResults(filteredResults.reverse());
+      }, [post, value]);
 
-        try {
-            const response = await api.put(`/posts/${id}`, updatedPost);
-            setPost(post.map((post) => (post.id === id ? { ...response.data } : post)));
-            setEditTitle('');
-            setEditBody('');
-            navigate('/');
-        } catch (err) {
-            console.log(err.message);
-        }
-    };
-    return (
-        <DataContext.Provider
-            value={{
-                width,
-                value,
-                Setvalue,
-                post,
-                fetchError,
-                isLoading,
-                editTitle,
-                setEditTitle,
-                editBody,
-                setEditBody,
-                handleEdit,
-                handleDelete,
-                postTitle,
-                setPostTitle,
-                postBody,
-                setPostBody,
-                handleSubmit,
-                searchResults
-            }}
-        >
-            {children}
-        </DataContext.Provider>
-    );
+      const handleSubmit = async (e) => {
+            e.preventDefault();
+            const datetime = format(new Date(), "MMMM dd, yyyy pp");
+            const newPost = {
+                  title: postTitle,
+                  body: postBody,
+            };
+            try {
+                  const response = await api.post("/post/createpost", newPost);
+                  setPost((prev) => [response.data.post, ...prev]);
+                  setPostTitle("");
+                  setPostBody("");
+            } catch (err) {
+                  if (err.response) {
+                        console.log(err.response?.data || err.message);
+                  } else {
+                        console.log(`Error : ${err.message}`);
+                  }
+            }
+      };
+
+      const handleDelete = async (id) => {
+            try {
+                  await api.delete(`/post/${id}`);
+                  const delItems = post.filter((post) => post._id !== id);
+                  navigate("/");
+
+                  setPost(delItems);
+            } catch (err) {
+                  console.log(`Error : ${err.message}`);
+            }
+      };
+
+      const handleEdit = async (id) => {
+            const datetime = format(new Date(), "MMMM dd, yyyy pp");
+            const updatedPost = {
+                  title: editTitle,
+                  body: editBody,
+            };
+
+            try {
+                  const response = await api.put(`/post/${id}`, updatedPost);
+                  setPost(post.map((post) => (post._id === id ? { ...response.data } : post)));
+                  setEditTitle("");
+                  setEditBody("");
+                  navigate("/");
+            } catch (err) {
+                  console.log(err.response?.data || err.message);
+            }
+      };
+      return (
+            <DataContext.Provider
+                  value={{
+                        width,
+                        value,
+                        Setvalue,
+                        post,
+                        fetchError,
+                        isLoading,
+                        editTitle,
+                        setEditTitle,
+                        editBody,
+                        setEditBody,
+                        handleEdit,
+                        handleDelete,
+                        postTitle,
+                        setPostTitle,
+                        postBody,
+                        setPostBody,
+                        handleSubmit,
+                        searchResults,
+                        isLoggedIn,
+                        setIsLoggedIn,
+                        checkingAuth,
+                        currentUser,
+                        setCurrentUser,
+                  }}
+            >
+                  {children}
+            </DataContext.Provider>
+      );
 };
 
 export default DataContext;
