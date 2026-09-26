@@ -41,7 +41,7 @@ export const signUp = async (req, res) => {
                         fullName: newUser.fullName,
                   });
             } else {
-                  res.status(400).json({ error: "invalid user data" });
+                  res.status(400).json({ error: "Invalid user data" });
             }
       } catch (error) {
             console.log(`error in signup controller: ${err}`);
@@ -56,7 +56,7 @@ export const login = async (req, res) => {
             const isPasswordCorrect = await bcrypt.compare(password, user?.password || "");
 
             if (!user || !isPasswordCorrect) {
-                  return res.status(400).json({ error: "email or password invalid" });
+                  return res.status(400).json({ error: "Email or password invalid" });
             }
 
             generateToken(user._id, res);
@@ -86,7 +86,7 @@ export const getMe = async (req, res) => {
       try {
             const user = await User.findOne({ _id: req.user._id }).select("-password");
             if (!user) {
-                  return res.status(404).json({ message: "user not found" });
+                  return res.status(404).json({ message: "User not found" });
             }
             res.status(200).json(user);
       } catch (err) {
