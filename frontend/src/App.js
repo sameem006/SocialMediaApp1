@@ -5,43 +5,120 @@ import Header from "./Header";
 import Home from "./Home";
 import PostPage from "./PostPage";
 import About from "./About";
-import { Route, Routes, Link, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { format } from "date-fns";
-import Post from "./Post";
-import PostLayout from "./PostLayout";
+import { Route, Routes, Navigate } from "react-router-dom";
 import Footer from "./Footer";
-import api from "./api/posts";
-import posts from "./api/posts";
 import Edit from "./Edit";
-import useWindowSize from "./hooks/useWindowSize";
-import useAxiosFetch from "./hooks/useAxiosFetch";
-import { DataProvider } from "./context/DataContext";
+
+import { DataProvider, DataContext } from "./context/DataContext";
 import Signup from "./pages/signup/signUp";
 import Login from "./pages/login/login";
 
+import { useContext } from "react";
+
+function AppRoutes() {
+      const { isLoggedIn, checkingAuth } = useContext(DataContext);
+
+      if (checkingAuth) {
+            return <p>Checking Auth !! wait</p>;
+      }
+
+      return (
+            <Routes>
+                  {/* HOME */}
+                  <Route
+                        path="/"
+                        element={
+                              isLoggedIn ? (
+                                    <div className="App">
+                                          <Header title="social media" />
+                                          <Nav />
+                                          <Home />
+                                          <Footer />
+                                    </div>
+                              ) : (
+                                    <Navigate to="/login" replace />
+                              )
+                        }
+                  />
+
+                  <Route path="/login" element={isLoggedIn ? <Navigate to="/" replace /> : <Login />} />
+
+                  <Route path="/signup" element={isLoggedIn ? <Navigate to="/" replace /> : <Signup />} />
+
+                  <Route
+                        path="/post"
+                        element={
+                              isLoggedIn ? (
+                                    <div className="App">
+                                          <Header title="social media" />
+                                          <Nav />
+                                          <NewPost />
+                                          <Footer />
+                                    </div>
+                              ) : (
+                                    <Navigate to="/login" replace />
+                              )
+                        }
+                  />
+
+                  <Route
+                        path="/post/:id"
+                        element={
+                              isLoggedIn ? (
+                                    <div className="App">
+                                          <Header title="social media" />
+                                          <Nav />
+                                          <PostPage />
+                                          <Footer />
+                                    </div>
+                              ) : (
+                                    <Navigate to="/login" replace />
+                              )
+                        }
+                  />
+
+                  <Route
+                        path="/edit/:id"
+                        element={
+                              isLoggedIn ? (
+                                    <div className="App">
+                                          <Header title="social media" />
+                                          <Nav />
+                                          <Edit />
+                                          <Footer />
+                                    </div>
+                              ) : (
+                                    <Navigate to="/login" replace />
+                              )
+                        }
+                  />
+
+                  <Route
+                        path="/about"
+                        element={
+                              isLoggedIn ? (
+                                    <div className="App">
+                                          <Header title="social media" />
+                                          <Nav />
+                                          <About />
+                                          <Footer />
+                                    </div>
+                              ) : (
+                                    <Navigate to="/login" replace />
+                              )
+                        }
+                  />
+
+                  <Route path="*" element={<Missing />} />
+            </Routes>
+      );
+}
+
 function App() {
       return (
-            <div className="App">
-                  <DataProvider>
-                        <Header title={"social media"} />
-
-                        <Nav />
-                        <Routes>
-                              <Route path="/signup" element={<Signup />} />
-                              <Route path="/login" element={<Login />} />
-                              <Route path="/" element={<Home />} />
-                              <Route path="post">
-                                    <Route index element={<NewPost />} />
-                                    <Route path=":id" element={<PostPage />} />
-                              </Route>
-                              <Route path="/edit/:id" element={<Edit />} />
-                              <Route path="about" element={<About />} />
-                              <Route path="*" element={<Missing />} />
-                        </Routes>
-                        <Footer />
-                  </DataProvider>
-            </div>
+            <DataProvider>
+                  <AppRoutes />
+            </DataProvider>
       );
 }
 
