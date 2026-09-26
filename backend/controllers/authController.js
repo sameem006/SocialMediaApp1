@@ -7,14 +7,14 @@ export const signUp = async (req, res) => {
             const { username, fullName, email, password } = req.body;
             const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
             if (!emailRegex.test(email)) {
-                  return res.status(400).json({ error: "invalid email format" });
+                  return res.status(400).json({ error: "Invalid email format" });
             }
 
             const existingEmail = await User.findOne({ email });
             const existingUsername = await User.findOne({ username });
 
             if (existingEmail || existingUsername) {
-                  return res.status(400).json({ error: "email or username already exist" });
+                  return res.status(400).json({ error: "Email or username already exist" });
             }
 
             if (password.length < 6) {
